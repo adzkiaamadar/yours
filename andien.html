@@ -1,0 +1,472 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Here, Yes You</title>
+    <!-- remixicon -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css"
+    />
+    <!-- css -->
+    <link rel="stylesheet" href="/src/output.css" />
+
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  </head>
+  <body id="mainBody" class="font-poppins bg-black text-cyan-400 overflow-x-hidden relative">
+
+    <!-- LOADING SCREEN -->
+<div id="loadingScreen" class="fixed inset-0 z-[60] flex flex-col items-center justify-center bg-black">
+
+  <div class="w-16 h-16 border-4 border-cyan-400 border-t-transparent rounded-full animate-spin mb-6"></div>
+
+  <p class="text-cyan-400 tracking-widest text-sm animate-pulse">
+    INITIALIZING SYSTEM...
+  </p>
+
+</div>
+
+    <!-- ACCESS LOCK SCREEN -->
+<div id="lockScreen" class="fixed inset-0 z-50 px-6 flex items-center justify-center bg-black/80 backdrop-blur-xl">
+
+  <div class="bg-black border border-cyan-400/40 p-8 rounded-2xl text-center w-[90%] max-w-md shadow-2xl">
+
+    <h2 class="text-2xl font-bold mb-4 text-cyan-400 tracking-widest">
+      SYSTEM LOCKED
+    </h2>
+
+    <p class="text-gray-400 text-sm mb-6">
+      Enter Access Code To Continue
+    </p>
+
+    <input 
+      type="password" 
+      id="accessCode"
+      placeholder="••••••"
+      class="w-full px-4 py-2 bg-black border border-cyan-400/30 rounded-lg text-center text-cyan-300 focus:outline-none focus:border-cyan-400 mb-4"
+    >
+
+    <p id="errorMsg" class="text-red-400 text-sm mb-4 hidden">
+      INVALID CODE
+    </p>
+
+    <button onclick="checkCode()"
+      class="w-full px-4 py-2 bg-cyan-400 text-black rounded-lg hover:scale-105 transition">
+      UNLOCK SYSTEM
+    </button>
+
+  </div>
+
+</div>
+
+    <!-- MATRIX STYLE BACKGROUND -->
+    <div class="fixed inset-0 -z-10 opacity-20 pointer-events-none">
+      <div
+        class="absolute inset-0 bg-[radial-gradient(circle_at_center,#0f172a,black)]"
+      ></div>
+      <div
+        class="absolute inset-0 animate-pulse bg-gradient-to-br from-cyan-500/10 via-transparent to-pink-500/10"
+      ></div>
+    </div>
+
+    <!-- TOP STATUS BAR -->
+    <div
+      class="fixed top-0 left-0 w-full flex justify-between px-6 py-3 text-xs bg-black/60 backdrop-blur border-b border-cyan-400/20 z-100"
+    >
+      <span>ANOMALY TRACKING SYSTEM v4.7</span>
+      <span id="clock"></span>
+    </div>
+
+    <!-- HERO -->
+    <section
+      class="min-h-screen flex flex-col justify-center items-center text-center px-6 pt-20"
+    >
+      <h1
+        class="text-5xl md:text-7xl font-bold tracking-widest mb-6 animate-pulse"
+      >
+        ANOMALY DETECTED
+      </h1>
+
+      <div
+        class="w-full max-w-xl bg-white/5 backdrop-blur-xl p-6 rounded-xl border border-cyan-400/20 text-left font-mono text-sm text-green-400"
+      >
+        <p id="terminal"></p>
+      </div>
+
+      <div class="mt-8 w-64 bg-white/10 rounded-full h-2 overflow-hidden">
+        <div
+          id="progressBar"
+          class="h-full bg-cyan-400 w-0 transition-all duration-500"
+        ></div>
+      </div>
+
+      <button
+        onclick="enterSystem()"
+        class="mt-10 px-8 py-3 border border-cyan-400 rounded-xl hover:bg-cyan-400 hover:text-black transition-all duration-300 hover:scale-110"
+      >
+        ENTER REALITY
+      </button>
+    </section>
+
+    <!-- PROFILE -->
+    <section
+      id="profile"
+      class="min-h-screen flex flex-col justify-center items-center px-6 hidden pt-20 pb-10"
+    >
+      <div
+        class="bg-white/5 backdrop-blur-xl p-8 md:p-10 rounded-2xl border border-cyan-400/40 shadow-2xl max-w-xl w-full text-center hover:scale-[1.02] transition-all duration-500"
+      >
+        <!-- TITLE -->
+        <h2
+          class="text-3xl md:text-4xl font-bold mb-8 text-cyan-400 tracking-widest relative inline-block"
+        >
+          PROFILE ANALYZE
+          <span
+            class="absolute -bottom-2 left-0 w-full h-[2px] bg-cyan-400"
+          ></span>
+        </h2>
+
+        <!-- ANOMALY IMAGE -->
+        <div class="flex justify-center mb-8 relative">
+          <!-- Glow -->
+          <div
+            class="absolute w-40 h-40 md:w-48 md:h-48 rounded-full bg-cyan-400/20 blur-2xl animate-pulse"
+          ></div>
+
+          <!-- Neon Border -->
+          <div
+            class="relative w-36 h-36 md:w-44 md:h-44 rounded-full p-[3px] bg-cyan-400"
+          >
+            <div class="w-full h-full rounded-full overflow-hidden bg-black">
+              <img
+                src="assets\photo.jpg"
+                alt="Anomaly"
+                class="w-full h-full object-cover"
+              />
+            </div>
+          </div>
+        </div>
+
+        <!-- DATA LIST -->
+        <div class="space-y-6 text-gray-300 text-base md:text-lg">
+          <!-- Identity -->
+          <div
+            class="flex flex-col md:flex-row md:justify-between gap-1 border-b border-white/10 pb-3"
+          >
+            <p class="text-gray-400">Identity</p>
+            <span class="text-white font-semibold break-words md:text-right">
+              Ariandini Shafira Nadhif
+            </span>
+          </div>
+
+          <!-- Version -->
+          <div
+            class="flex flex-col md:flex-row md:justify-between gap-1 border-b border-white/10 pb-3"
+          >
+            <p class="text-gray-400">Latest Update</p>
+            <span class="text-white break-words md:text-right">
+              Version +1.6 Update Installed
+            </span>
+          </div>
+
+          <!-- Status -->
+          <div
+            class="flex flex-col md:flex-row md:justify-between gap-1 border-b border-white/10 pb-3"
+          >
+            <p class="text-gray-400">Status</p>
+            <span
+              class="text-cyan-400 font-semibold break-words md:text-right animate-pulse"
+            >
+              Too Rare To Replace
+            </span>
+          </div>
+
+          <!-- Impact -->
+          <div class="flex flex-col md:flex-row md:justify-between gap-1">
+            <p class="text-gray-400">Impact</p>
+            <span class="text-white break-words md:text-right"> Massive </span>
+          </div>
+        </div>
+
+        <!-- BUTTON -->
+        <button
+          onclick="overrideSystem()"
+          class="mt-10 px-8 py-3 bg-cyan-400 text-black rounded-xl hover:scale-110 transition shadow-lg"
+        >
+          CONFIRM DATA
+        </button>
+      </div>
+    </section>
+
+    <!-- FINAL MESSAGE -->
+    <section
+      id="final"
+      class="min-h-screen flex flex-col justify-center items-center text-center px-6 hidden"
+    >
+      <h2 class="text-4xl font-bold mb-6 animate-pulse text-cyan-300">
+        SYSTEM FAILURE
+      </h2>
+
+      <p class="max-w-2xl text-gray-300 text-lg leading-relaxed">
+        After multiple simulations... removing you from existence causes
+        imbalance. Conclusion: The world runs better with you in it. Happy
+        Birthday. Continue being rare.
+      </p>
+
+      <!-- BUTTON GROUP -->
+      <div class="mt-10 flex flex-col sm:flex-row gap-4">
+        <!-- REBOOT -->
+        <button
+          onclick="location.reload()"
+          class="px-6 py-3 border border-cyan-400 rounded-xl hover:bg-cyan-400 hover:text-black transition w-full sm:w-auto"
+        >
+          REBOOT TIMELINE
+        </button>
+
+        <!-- SECRET ACCESS -->
+        <button
+          onclick="
+            document
+              .getElementById('secret')
+              .scrollIntoView({ behavior: 'smooth' })
+          "
+          class="px-6 py-3 border border-cyan-400 rounded-xl hover:bg-cyan-400 hover:text-black transition w-full sm:w-auto"
+        >
+          ACCESS HIDDEN FILE
+        </button>
+      </div>
+    </section>
+
+    <!-- SECRET LETTER -->
+    <section
+      id="secret"
+      class="min-h-screen flex flex-col justify-center items-center text-center px-6 hidden relative pb-20"
+    >
+      <!-- subtle glow -->
+      <div
+        class="absolute inset-0 -z-10 bg-gradient-to-b from-transparent via-cyan-500/5 to-transparent"
+      ></div>
+
+      <div
+        class="max-w-2xl w-full bg-white/5 backdrop-blur-xl border border-cyan-400/20 p-8 md:p-12 rounded-2xl shadow-2xl relative overflow-hidden"
+      >
+        <h2
+          id="decryptTitle"
+          class="text-2xl md:text-3xl font-bold text-cyan-300 mb-6 tracking-widest"
+        >
+          ENCRYPTED FILE
+        </h2>
+
+        <p
+          id="secretText"
+          class="text-gray-300 leading-relaxed text-base md:text-lg opacity-0 transition duration-700 whitespace-pre-line"
+        ></p>
+      </div>
+    </section>
+
+    <script>
+        // ===== LOADING SCREEN =====
+
+window.addEventListener("load", () => {
+
+  setTimeout(() => {
+
+    const loader = document.getElementById("loadingScreen");
+    loader.style.opacity = "0";
+    loader.style.transition = "opacity 0.6s ease";
+
+    setTimeout(() => {
+      loader.remove();
+    }, 600);
+
+  }, 2500); // 2500 = 2.5 detik loading
+
+});
+
+        // ===== ACCESS CODE SYSTEM =====
+
+const correctCode = "140326"; // GANTI SESUAI MAU KAMU
+
+function checkCode() {
+  const input = document.getElementById("accessCode").value;
+
+  if (input === correctCode) {
+
+    document.getElementById("lockScreen").style.opacity = "0";
+
+    setTimeout(() => {
+      document.getElementById("lockScreen").remove();
+    }, 
+    500);
+    typeEffect();
+
+  } else {
+    document.getElementById("errorMsg").classList.remove("hidden");
+  }
+}
+    </script>
+
+    <script>
+      const lines = [
+        "Boot sequence initiated...",
+        "Scanning emotional frequency...",
+        "Calculating impact radius...",
+        "Detecting presence anomaly...",
+        "",
+        "Result: HIGH VALUE ENTITY",
+        "Risk Level if removed: CRITICAL",
+        "",
+        "Recommendation: PROTECT AT ALL COST",
+      ];
+
+      let i = 0;
+      function typeEffect() {
+        if (i < lines.length) {
+          document.getElementById("terminal").innerHTML += lines[i] + "<br/>";
+          document.getElementById("progressBar").style.width =
+            ((i + 1) / lines.length) * 100 + "%";
+          i++;
+          setTimeout(typeEffect, 400);
+        }
+      }
+
+      function enterSystem() {
+        document.getElementById("profile").classList.remove("hidden");
+        document
+          .getElementById("profile")
+          .scrollIntoView({ behavior: "smooth" });
+      }
+
+      function overrideSystem() {
+        document.getElementById("final").classList.remove("hidden");
+        document.getElementById("final").scrollIntoView({ behavior: "smooth" });
+      }
+
+      // LIVE CLOCK
+      function updateClock() {
+        const now = new Date();
+        document.getElementById("clock").innerText = now.toLocaleTimeString();
+      }
+      setInterval(updateClock, 1000);
+      updateClock();
+
+      // HIDDEN EASTER EGG
+      let clickCount = 0;
+      document.body.addEventListener("click", () => {
+        clickCount++;
+        if (clickCount === 7) {
+          alert("Hidden protocol unlocked 😈");
+        }
+      });
+    </script>
+
+    <script>
+      // ===== SECRET SYSTEM =====
+
+      // Show secret section properly
+      function showSecret() {
+        const section = document.getElementById("secret");
+        section.classList.remove("hidden");
+        section.scrollIntoView({ behavior: "smooth" });
+
+        decryptMessage();
+      }
+
+      // Override button access
+      document
+        .querySelector("button[onclick*='secret']")
+        ?.addEventListener("click", showSecret);
+
+      // Long press unlock (mobile style)
+      let pressTimer;
+      const finalTitle = document.querySelector("#final h2");
+
+      finalTitle.addEventListener("touchstart", () => {
+        pressTimer = setTimeout(() => {
+          showSecret();
+        }, 1500);
+      });
+
+      finalTitle.addEventListener("touchend", () => {
+        clearTimeout(pressTimer);
+      });
+
+      // Decrypt typing effect
+      const secretMessage = `
+Hey there, YES YOU🫵, Barakallahu fi umrik..
+
+It's your turn to be 16th!! hope this new age gives you the prettiest knowledge and beautiful memory you can get..
+
+Just so you know.. Setiap hari itu kesempatan buat nemuin hal baru yang seru, entah itu waktu ngerjain tugas, ngobrol sama temen, atau bahkan waktu sendirian. apa pun yang terjadi, baik itu tantangan atau hal menyenangkan, percaya pasti ada pelajaran di baliknya. Semoga kamu selalu dikelilingi orang yang ngasih vibe positif, dan semoga perjalanan kamu makin seru!!
+
+Small steps can bring you closer to understanding yourself and the world. Every experience, whether good or bad, helps you become wiser and stronger. the journey might not always be easy, but it’s all part of finding out who you really are, okeyy.. terus explore dan jangan lupa, bukan cuma soal pencapaian, tapi gimana kamu nikmatin setiap momennya.
+
+may Allah make everything easy for you in ways you don’t even expect. may he calm your heart, guide your steps, and fill your days with peace. whatever you’re facing, may it lead you closer to something beautiful. 
+
+🌟🌟🌟
+
+with love, AmadaR
+`;
+
+      let charIndex = 0;
+      let alreadyDecrypted = false;
+
+      function decryptMessage() {
+        if (alreadyDecrypted) return;
+        alreadyDecrypted = true;
+
+        const textEl = document.getElementById("secretText");
+        textEl.classList.remove("opacity-0");
+
+        function type() {
+          if (charIndex < secretMessage.length) {
+            textEl.innerHTML += secretMessage.charAt(charIndex);
+            charIndex++;
+
+            // AUTO SCROLL WHILE TYPING
+            window.scrollTo({
+              top: document.body.scrollHeight,
+              behavior: "smooth",
+            });
+
+            setTimeout(type, 35);
+          } else {
+            document.getElementById("decryptTitle").innerText =
+              "FILE DECRYPTED";
+            setTimeout(() => {
+              launchFinalConfetti();
+            }, 1500);
+          }
+        }
+
+        type();
+      }
+
+      function launchFinalConfetti() {
+        const duration = 3000;
+        const end = Date.now() + duration;
+
+        (function frame() {
+          confetti({
+            particleCount: 5,
+            angle: 60,
+            spread: 70,
+            origin: { x: 0 },
+          });
+
+          confetti({
+            particleCount: 5,
+            angle: 120,
+            spread: 70,
+            origin: { x: 1 },
+          });
+
+          if (Date.now() < end) {
+            requestAnimationFrame(frame);
+          }
+        })();
+      }
+    </script>
+  </body>
+</html>
